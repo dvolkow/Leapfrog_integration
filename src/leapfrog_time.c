@@ -14,12 +14,28 @@ void lp_time_start_init(void)
         start_time = time(NULL);
 }
 
+void print_elapsed_time(void)
+{
+        time_t current_time = time(NULL);
+        unsigned int h, m;
+        double seconds = difftime(current_time, start_time);
+
+        h = (unsigned int)(seconds/(__LP_MIN * __LP_HOUR));
+        seconds -= (__LP_MIN * __LP_HOUR) * h;
+        m = (unsigned int)(seconds / __LP_MIN);
+        seconds -= __LP_MIN * m;
+
+        printf("Elapsed time: %u h : %u m : %0.1f s. ", h, m, seconds);
+
+}
+
 void print_estimation_time(leapfrog_t *t)
 {
         time_t current_time = time(NULL);
         unsigned int h, m;
         double seconds = difftime(current_time, start_time);
-        seconds = leapfrog_t_2_double(&g_state.time) / leapfrog_t_2_double(t) * seconds - seconds;
+        seconds = leapfrog_t_2_double(&g_state.time) / 
+                        leapfrog_t_2_double(t) * seconds - seconds;
 
 
         h = (unsigned int)(seconds/(__LP_MIN * __LP_HOUR));

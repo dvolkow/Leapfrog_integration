@@ -1,5 +1,7 @@
 CC=gcc
-CFLAGS=-Wall -O2 -DLP_MPFR_CASE# -DLEAPFROG_DEBUG -DLP_MPFR_CASE
+CFLAGS=-Wall -O2
+MPFRFLAG=-DLP_MPFR_CASE
+DEBUGFLAG=-DLEAPFROG_DEBUG
 LDFLAGS=-lm -lmpfr
 SOURCES=leapfrog_main.c leapfrog_core.c leapfrog_utils.c leapfrog_io.c leapfrog_stats.c leapfrog_generator.c leapfrog_math.c leapfrog_parser.c leapfrog_cfg.c leapfrog_time.c
 HEADERS=leapfrog.h leapfrog_types.h leapfrog_utils.h leapfrog_const.h leapfrog_io.h leapfrog_compile.h leapfrog_math.h leapfrog_precision.h leapfrog_stats.h leapfrog_core.h leapfrog_generator.h leapfrog_memory.h leapfrog_parser.h leapfrog_cfg.h leapfrog_time.h
@@ -14,6 +16,16 @@ $(EXECUTABLE): $(OBJECTS)
 %.o: %.c $(HEADERS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-
 clean:
 	rm $(OBJECTS) $(EXECUTABLE)
+
+oclean:
+	rm $(OBJECTS) 
+
+
+install:
+	sudo cp ./leapfrog /usr/bin/leapfrog
+	sudo mkdir -p /etc/leapfrog
+	sudo cp ./lp.cfg /etc/leapfrog/lp.cfg
+
+

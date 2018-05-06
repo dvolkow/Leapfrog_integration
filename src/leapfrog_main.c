@@ -44,6 +44,7 @@ static void leapfrog_run() {
                         printf("\r%0.2f%% ready. ", 
                                   100 * leapfrog_t_2_double(&t) / leapfrog_t_2_double(&g_state.time));
                         print_estimation_time(&t);
+                        print_elapsed_time();
                         leapfrog_sum(&thr, &thr, &delta);
                 }
                 ++i;

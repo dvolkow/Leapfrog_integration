@@ -5,5 +5,6 @@
 
 void lp_time_start_init(void);
 void print_estimation_time(leapfrog_t *);
+void print_elapsed_time(void);
 
 #endif  // LEAPFROG_TIME_H
