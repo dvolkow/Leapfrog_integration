@@ -6,29 +6,34 @@
 #include "leapfrog_precision.h"
 
 
-#ifdef LP_DEFAULT_ROUNDING_CASE
+#ifndef LP_MPFR_CASE
 
         #define leapfrog_to_double(l) (double)(l)
 
-        #define leapfrog_sum(a, b) ((a) + (b))
-        #define leapfrog_inc(a, b) (*(a) += (b))
+        #define leapfrog_sum(res, a, b) (*res = *(a) + *(b))
 
-        #define leapfrog_sub(a, b) ((a) - (b))
-        #define leapfrog_dec(a, b) (*(a) -= (b))
+        #define leapfrog_sub(res, a, b) (*res = *(a) - *(b))
 
-        #define leapfrog_mul(a, b) ((a) * (b))
-        #define leapfrog_pmul(a, b) (*(a) *= (b))
+        #define leapfrog_mul(res, a, b) (*res = *(a) * (*(b)))
+        #define leapfrog_mul_2(res, a)  (*res = (*(a)) * 2)
 
-        #define leapfrog_div(a, b) ((a) / (b))
-        #define leapfrog_pdiv(a, b) (*(a) /= (b))
+        #define leapfrog_div(res, a, b) (*res = (*(a)) / (*(b)))
+        #define leapfrog_d_div(res, a, b) (*res = (a) / (*(b)))
+        #define leapfrog_div_2(res, a) (*res = (*(a)) / 2)
 
+        #define leapfrog_neg(res, a) (*res = -(*(a)))
+        #define leapfrog_abs(res, a) (*res = fabs(*(a)))
+        #define leapfrog_sqrt(res, a) (*res = sqrt(*(a)))
+
+        #define leapfrog_cmp(a, b) (*(a) > *(b) ? 1 : -1)
+        #define leapfrog_cmp_double(a, b) (*(a) > (b) ? 1 : -1)
 #else
 
-        #ifdef LP_MPFR_CASE
 
-                #include <gmp.h>
-                #include <mpfr.h>
-        #endif
+        #include <gmp.h>
+        #include <mpfr.h>
+
+        #define LP_RND  MPFR_RNDD
 
 
         double leapfrog_to_double(leapfrog_t *lp);
@@ -43,13 +48,16 @@
         void leapfrog_mul_2(leapfrog_t *res, leapfrog_t *a); 
         void leapfrog_div(leapfrog_t *res, leapfrog_t *a, 
                                                 leapfrog_t *b);
+        void leapfrog_d_div(leapfrog_t *res, double a,
+                                                leapfrog_t *b); 
         void leapfrog_div_2(leapfrog_t *res, leapfrog_t *a); 
         void leapfrog_sqrt(leapfrog_t *res, leapfrog_t *a); 
         void leapfrog_abs(leapfrog_t *res, leapfrog_t *a);
         void leapfrog_neg(leapfrog_t *res, leapfrog_t *a); 
 
+        /* a > b -> positive, a < b -> negative, zero also */
         int leapfrog_cmp(leapfrog_t *a, leapfrog_t *b);
-        int leapfrog_cmp_double(leapfrog_t *a, const double b);
+        int leapfrog_cmp_double(leapfrog_t *a, double b);
 #endif
 
 

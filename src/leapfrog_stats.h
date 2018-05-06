@@ -4,6 +4,6 @@
 #include "leapfrog_types.h"
 
 
-double lp_hamiltonian(const equation_t *);
+void lp_hamiltonian(leapfrog_t *res, equation_t *);
 
 #endif // LEAPFROG_STATS_H

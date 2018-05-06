@@ -20,5 +20,7 @@ void lp_equation_init_shape(equation_t *eq,
 void lp_equation_init_random(equation_t *eq);
 
 
+void lp_equation_init(equation_t *eq);
+void lp_equation_release(equation_t *eq);
 
 #endif // LEAPFROG_GENERATOR_H

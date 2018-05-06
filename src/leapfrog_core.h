@@ -3,15 +3,18 @@
 
 #include "leapfrog_types.h"
 
-void lp_equation_init(equation_t *eq);
-void lp_newton_update_eq(equation_t *eq, const double step);
+void lp_equation_set_ddot_start(equation_t *eq);
+void lp_newton_update_eq(equation_t *eq, leapfrog_t *step);
 
-double lp_optimize_step_by_hamiltonian(const equation_t *eq, 
-                                       const double precision,
-                                             double cur_step);
+void lp_optimize_step_by_hamiltonian(leapfrog_t *res,
+                                     equation_t *eq, 
+                                     leapfrog_t *precision,
+                                     leapfrog_t *cur_step);
 
-void lp_core_hamiltonian_init(const double); 
+void lp_core_hamiltonian_init(leapfrog_t *); 
 
 void lp_newton_update_kick_drift_kick(equation_t *eq, 
-                                        const double step);
+                                        leapfrog_t *step);
+void lp_core_structures_init(void);
+void lp_core_structures_release(void);
 #endif // LEAPFROG_CORE_H

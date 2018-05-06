@@ -13,13 +13,11 @@
 
 typedef uint16_t point_id_t;
 
-#define __leapfrog_t_to_double(value) ((double)value)
-#define __double_to_leapfrog_t(value) (value)
-
-
 typedef struct double_dot_array_s {
         leapfrog_t a[LEAPFROG_MAX_DIM];
 } ddot_array_t;
+
+#define GET_DDOT_A(array, i) ((array)->a[i])
 
 
 typedef struct point_s {
