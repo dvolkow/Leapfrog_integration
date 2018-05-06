@@ -17,4 +17,6 @@ void lp_newton_update_kick_drift_kick(equation_t *eq,
                                         leapfrog_t *step);
 void lp_core_structures_init(void);
 void lp_core_structures_release(void);
+
+void lp_core_up(void);
 #endif // LEAPFROG_CORE_H

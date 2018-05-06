@@ -29,7 +29,11 @@ void lp_init_eq_from_file(equation_t *eq, FILE *);
  * Format:
  *       x_0 x_1 ... x_N
  */       
+void lp_write_eq_x_to_file(equation_t *eq, FILE *);
+
 void lp_write_eq_to_file(equation_t *eq, FILE *);
+
+void lp_rbody_dump(equation_t *eq);
 
 void lp_write_eq_to_screen(equation_t *eq); 
 void lp_write_eq_hamilton_to_screen(equation_t *eq); 

@@ -1,12 +1,14 @@
 #include <assert.h>
 
 #include "leapfrog_io.h"
+#include "leapfrog_generator.h"
 #include "leapfrog_compile.h"
 #include "leapfrog_stats.h"
 #include "leapfrog_utils.h"
 #include "leapfrog_memory.h"
 #include "leapfrog_precision.h"
 #include "leapfrog_math.h"
+#include "leapfrog_cfg.h"
 
 
 __leapfrog_cold__
@@ -97,7 +99,7 @@ void lp_write_eq_hamilton_to_screen(equation_t *eq)
 
 
 __leapfrog_hot__
-void lp_write_eq_to_file(equation_t *eq, FILE *f) 
+void lp_write_eq_x_to_file(equation_t *eq, FILE *f) 
 {
         uint16_t i;
         uint8_t  j;
@@ -109,4 +111,39 @@ void lp_write_eq_to_file(equation_t *eq, FILE *f)
                 fprintf(f, "%f", leapfrog_t_2_double(&GET_M(eq, i)));
                 fprintf(f, "\n");
         }
+}
+
+__leapfrog_hot__
+void lp_write_eq_to_file(equation_t *eq, FILE *f) 
+{
+        uint16_t i;
+        uint8_t  j;
+
+        fprintf(f, "%u %u\n", GET_DIM(eq), GET_SIZE(eq));
+
+        FORALL_BODY(i, GET_SIZE(eq)) {
+                FORALL_DIM(j, GET_DIM(eq)) {
+                        fprintf(f, "%lf ", leapfrog_t_2_double(&GET_X(eq, i, j)));
+                }
+                fprintf(f, "\n");
+                FORALL_DIM(j, GET_DIM(eq)) {
+                        fprintf(f, "%lf ", leapfrog_t_2_double(&GET_X_DOT(eq, i, j)));
+                }
+                fprintf(f, "\n");
+                fprintf(f, "%f\n", leapfrog_t_2_double(&GET_M(eq, i)));
+        }
+}
+
+__leapfrog_cold__
+void lp_rbody_dump(equation_t *eq) 
+{
+#ifdef LEAPFROG_DEBUG
+        assert(g_cfg.DEFAULT_FILE_RAND);
+#endif
+        FILE *f = fopen(g_cfg.DEFAULT_FILE_RAND, "w+");
+#ifdef LEAPFROG_DEBUG
+        assert(f);
+#endif
+        lp_write_eq_to_file(eq, f);
+        lp_fclose(f);
 }

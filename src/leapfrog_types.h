@@ -53,14 +53,39 @@ typedef struct leapfrog_parameters_s {
         char *output_xdot_file;
         char *output_h_file;
 
+        unsigned int dim;
+        unsigned int count;
+
         leapfrog_t counter;
         leapfrog_t time;
-        int  precision_bits;
-        int  precision_rounding;
+        leapfrog_t step;
 
+        union {
+                leapfrog_t precision;
+                int  precision_bits;
+                int  precision_rounding;
+        };
+
+        char isdemo;
         char precision_type;
+
+        equation_t eq;
 } lp_param_t;
 
+
+/*
+ * Leapfrog configure arrtibutes
+ */
+typedef struct leapfrog_cfg_s {
+        double       DEFAULT_STEP;
+        unsigned int CADR_COUNT;
+
+        double       GEN_M_SCALE;
+        double       GEN_X_SCALE;
+        double       GEN_XDOT_SCALE;
+
+        char         DEFAULT_FILE_RAND[LP_NAME_LENGTH];
+} leapfrog_cfg_t;
 
 /*
  * Precision types
@@ -88,6 +113,8 @@ enum {
 enum {
         LP_SUCCESS = 0,
         LP_FEW_ARG,
+        LP_PARSE_FAIL,
+        LP_BAD_STATE,
 
         /* must be last */
         LP_ERR_COUNT,
