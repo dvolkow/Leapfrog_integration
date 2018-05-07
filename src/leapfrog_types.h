@@ -1,3 +1,9 @@
+/*
+ * Here declared every basic types.
+ * That use in LP.
+ *
+ * Must read first. 
+ */
 #ifndef LEAPFROG_TYPES_H
 #define LEAPFROG_TYPES_H  1
 
@@ -11,25 +17,38 @@
         typedef mpfr_t   leapfrog_t;
 #endif
 
-typedef uint16_t point_id_t;
 
+typedef uint16_t        point_id_t;
+
+
+/*
+ * Deprecated, todo refactor it
+ */
 typedef struct double_dot_array_s {
         leapfrog_t a[LEAPFROG_MAX_DIM];
 } ddot_array_t;
-
 #define GET_DDOT_A(array, i) ((array)->a[i])
 
 
+
+/*
+ * Object for N-body modeling
+ */
 typedef struct point_s {
         leapfrog_t  x[LEAPFROG_MAX_DIM];
         leapfrog_t  x_dot[LEAPFROG_MAX_DIM];
         leapfrog_t  x_ddot_prev[LEAPFROG_MAX_DIM];     
 
         leapfrog_t  m;
-        point_id_t  id;
+        point_id_t  id; // -- probably unused
 } point_t;
 
 
+
+
+/*
+ * Here begin state and following 
+ */
 typedef struct equation_s {
         point_t     body[LEAPFROG_MAX_COUNT];
         point_id_t  size;
@@ -47,6 +66,12 @@ typedef struct equation_s {
 #define GET_SIZE(eq)            ((eq)->size)
 
 
+
+/*
+ * Global unique MUST!
+ * Instanse of this into leapfrog_core.c
+ * Where is needed, use extern declaration
+ */
 typedef struct leapfrog_parameters_s {
         char *input_file;
         char *output_x_file;
@@ -60,11 +85,9 @@ typedef struct leapfrog_parameters_s {
         leapfrog_t time;
         leapfrog_t step;
 
-        union {
-                leapfrog_t precision;
-                int  precision_bits;
-                int  precision_rounding;
-        };
+        leapfrog_t precision;
+        int  precision_bits;
+        int  precision_rounding;
 
         char isdemo;
         char precision_type;
@@ -73,8 +96,11 @@ typedef struct leapfrog_parameters_s {
 } lp_param_t;
 
 
+
 /*
  * Leapfrog configure arrtibutes
+ * Get them from lp.cfg or another
+ * May be ignored and have no instance
  */
 typedef struct leapfrog_cfg_s {
         double       DEFAULT_STEP;
@@ -87,8 +113,9 @@ typedef struct leapfrog_cfg_s {
         char         DEFAULT_FILE_RAND[LP_NAME_LENGTH];
 } leapfrog_cfg_t;
 
+
 /*
- * Precision types
+ * Precision types for generic rounding
  */
 enum {
         LP_DEFAULT_ROUNDING = 0,
@@ -96,8 +123,11 @@ enum {
         LP_DEC_ROUNDING,
 };
 
+
+
 /*
  * Fields int point_s
+ * Generic dummy
  */
 enum {
         LP_X = 0,
@@ -107,8 +137,10 @@ enum {
         LP_ID,
 };
 
+
+
 /*
- * Error types
+ * Error codes for debug & communication
  */
 enum {
         LP_SUCCESS = 0,

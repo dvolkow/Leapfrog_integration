@@ -4,11 +4,11 @@
 #include "leapfrog_types.h"
 
 /*
- * FORMAT CONFIGURE FILE
+ * FORMAT CONFIGURE FILE:
+ *
  *
  * LP_DEFAULT_STEP
  * LEAPFROG_CADR_COUNT
- *
  * LP_GEN_M_SCALE
  * LP_GEN_X_SCALE
  * LP_GEN_XDOT_SCALE

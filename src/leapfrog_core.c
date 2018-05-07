@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdio.h>
 
 #include "leapfrog_types.h"
 #include "leapfrog_compile.h"
@@ -13,11 +14,11 @@
 
 #ifdef LEAPFROG_DEBUG
         #include <assert.h>
-        #include <stdio.h>
 #endif
-        #include <stdio.h>
 
-lp_param_t g_state;
+
+extern lp_param_t g_state;
+
 
 static equation_t core_eq;
 static leapfrog_t h_init;
@@ -25,18 +26,23 @@ static leapfrog_t h_init;
 static ddot_array_t core_ddot_i[LEAPFROG_MAX_COUNT];
 static ddot_array_t core_xdot_i[LEAPFROG_MAX_COUNT];
 
+
+static inline void lp_newton_update_kick_drift_kick(equation_t *eq, 
+                                                    leapfrog_t *step);
+
 /*
  * Return new hamiltonian before current step of integrate 
  */
 __leapfrog_hot__
-static void lp_optimize_step_by_hamiltonian_move(leapfrog_t *res,
+static inline void lp_optimize_step_by_hamiltonian_move(leapfrog_t *res,
                                                  equation_t *eq,
                                                  leapfrog_t *cur_step)
 {
-        assert(*cur_step > 0);
+        assert(leapfrog_t_2_double(cur_step) > 0);
 
 #ifdef LEAPFROG_DEBUG
-        printf("%s: entry step %lf\n", __FUNCTION__, leapfrog_t_2_double(cur_step));
+        printf("%s: entry step %lf\n", 
+                        __FUNCTION__, leapfrog_t_2_double(cur_step));
 #endif
         lp_equation_copy(&core_eq, eq);
         lp_newton_update_kick_drift_kick(&core_eq, cur_step);
@@ -44,7 +50,10 @@ static void lp_optimize_step_by_hamiltonian_move(leapfrog_t *res,
 }
 
 
-__leapfrog_hot__
+/*
+ * Check condition for step: generic need
+ */
+__leapfrog_hot__// __leapfrog_pure__
 static inline int lp_optimize_step_condition(leapfrog_t *h_current,
                                              leapfrog_t *h_new,
                                              leapfrog_t *precision) 
@@ -63,11 +72,13 @@ static inline int lp_optimize_step_condition(leapfrog_t *h_current,
         return res;
 }
 
+
+
 /*
  * Find optimal step 
  */
 __leapfrog_hot__
-void lp_optimize_step_by_hamiltonian(leapfrog_t *res, 
+static inline void lp_optimize_step_by_hamiltonian(leapfrog_t *res, 
                                      equation_t *eq, 
                                      leapfrog_t *precision,
                                      leapfrog_t *cur_step)
@@ -90,17 +101,22 @@ void lp_optimize_step_by_hamiltonian(leapfrog_t *res,
         lp_hamiltonian(&h_current, eq);
 
 #ifdef LEAPFROG_DEBUG
-        printf("%s: entry step %lf\n", __FUNCTION__, leapfrog_t_2_double(cur_step));
-        printf("%s: hamiltonian %lf\n", __FUNCTION__, leapfrog_t_2_double(&h_init));
-        printf("%s: h_new %lf\n", __FUNCTION__, leapfrog_t_2_double(&h_new));
-        printf("%s: precision %0.10f\n", __FUNCTION__, leapfrog_t_2_double(precision));
+        printf("%s: entry step %lf\n", 
+                        __FUNCTION__, leapfrog_t_2_double(cur_step));
+        printf("%s: hamiltonian %lf\n", 
+                        __FUNCTION__, leapfrog_t_2_double(&h_init));
+        printf("%s: h_new %lf\n",
+                        __FUNCTION__, leapfrog_t_2_double(&h_new));
+        printf("%s: precision %0.10f\n", 
+                        __FUNCTION__, leapfrog_t_2_double(precision));
 #endif
 
         while (lp_optimize_step_condition(&h_current,
                                           &h_new, precision) > 0) {
                 leapfrog_div_2(res, res);
 #ifdef LEAPFROG_DEBUG
-                printf("%s: res %0.15f\n", __FUNCTION__, leapfrog_t_2_double(res));
+                printf("%s: res %0.15f\n", 
+                                __FUNCTION__, leapfrog_t_2_double(res));
 #endif
                 lp_optimize_step_by_hamiltonian_move(&h_new, eq, res);
                 was_lower = 1;
@@ -114,7 +130,8 @@ void lp_optimize_step_by_hamiltonian(leapfrog_t *res,
                                           &h_new, precision) < 0) {
                 leapfrog_mul_2(res, res);
 #ifdef LEAPFROG_DEBUG
-                printf("%s: res %0.15f\n", __FUNCTION__, leapfrog_t_2_double(res));
+                printf("%s: res %0.15f\n", 
+                                __FUNCTION__, leapfrog_t_2_double(res));
 #endif
                 lp_optimize_step_by_hamiltonian_move(&h_new, eq, res);
         }
@@ -129,10 +146,13 @@ ret_release:
         LP_T_RELEASE(h_new);
 }
 
+
+
 /*
  * Center and another body
  */
-static void lp_point_direction(ddot_array_t *res,
+__leapfrog_hot__
+static inline void lp_point_direction(ddot_array_t *res,
                 point_t *c, point_t *a) 
 {
         uint8_t i;
@@ -141,7 +161,8 @@ static void lp_point_direction(ddot_array_t *res,
 }
 
 
-static void lp_newton(ddot_array_t *res,
+__leapfrog_hot__
+static inline void lp_newton(ddot_array_t *res,
                 point_t *c, point_t *a, uint8_t dim)
 {
         leapfrog_t mul, r;
@@ -218,8 +239,9 @@ void lp_equation_set_ddot_start(equation_t *eq)
 }
 
 
+
 __leapfrog_hot__
-void lp_newton_update_kick_drift_kick(equation_t *eq, 
+static inline void lp_newton_update_kick_drift_kick(equation_t *eq, 
                                         leapfrog_t *step)
 {
         uint16_t i;
@@ -273,8 +295,16 @@ void lp_newton_update_kick_drift_kick(equation_t *eq,
         LP_T_RELEASE(acc);
 }
 
-__leapfrog_hot__
-void lp_newton_update_eq(equation_t *eq, leapfrog_t *step)
+
+
+/* 
+ * -------------------ATTENTION!!!-------------------
+ * CONSTANT STEP ONLY! FOR USAGE IT REMOVE ATTRIBUTE
+ * UNUSED AND SET CONSTANT STEP GENERALLY! NOT USE
+ * ALL FUNCTION THAT MAKE STEP DIRTY (as *_optimize)
+ */
+__leapfrog_hot__ __leapfrog_unused__
+static void lp_newton_update_eq(equation_t *eq, leapfrog_t *step)
 {
         uint16_t i;
         uint8_t  j;
@@ -319,6 +349,8 @@ void lp_newton_update_eq(equation_t *eq, leapfrog_t *step)
 }
 
 
+
+/* Generic update need */
 __leapfrog_hot__
 void lp_core_up(void) 
 {
@@ -329,11 +361,14 @@ void lp_core_up(void)
         lp_newton_update_kick_drift_kick(&g_state.eq, &g_state.step);
 }
 
+
+
 __leapfrog_cold__
 void lp_core_hamiltonian_init(leapfrog_t *h) 
 {
         leapfrog_t_set_lp(&h_init, h);
 }
+
 
 __leapfrog_cold__ 
 void lp_core_structures_init(void) 
@@ -347,6 +382,7 @@ void lp_core_structures_init(void)
         lp_equation_init(&core_eq);
         lp_param_t_init(&g_state);
 }
+
 
 __leapfrog_cold__ 
 void lp_core_structures_release(void)

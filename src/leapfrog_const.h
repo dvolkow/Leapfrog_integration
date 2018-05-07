@@ -9,4 +9,6 @@
 
 #define LEAPFROG_CADR_COUNT     1000
 
+#define LEAPFROG_VERSION        "0.2.1"
+
 #endif // LEAPFROG_CONST_H

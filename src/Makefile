@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -O2
+CFLAGS=-Wall -O2# -Wpedantic -O3
 MPFRFLAG=-DLP_MPFR_CASE
 DEBUGFLAG=-DLEAPFROG_DEBUG
 LDFLAGS=-lm -lmpfr
@@ -14,7 +14,7 @@ $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(OBJECTS) -o $@ $(LDFLAGS) 
 
 %.o: %.c $(HEADERS)
-	$(CC) -c -o $@ $< $(CFLAGS)
+	$(CC) -c -o $@ $< $(CFLAGS) $(MPFRFLAG) # $(DEBUGFLAG)
 
 clean:
 	rm $(OBJECTS) $(EXECUTABLE)

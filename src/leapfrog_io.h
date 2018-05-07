@@ -20,7 +20,7 @@ void lp_fprint_ddot_array(ddot_array_t *, FILE *);
  *
  * Also, see "sample" directory.
  */
-void lp_init_eq_from_file(equation_t *eq, FILE *);
+int lp_init_eq_from_file(equation_t *eq, FILE *);
 
 
 /*

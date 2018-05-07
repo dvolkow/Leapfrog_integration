@@ -1,0 +1,7 @@
+saves/*
+*.swp
+*.dat
+*.txt
+cscope.out
+*.gif
+leapfrog

@@ -1,3 +1,9 @@
+/*
+ * Interface to utility operations
+ * and procedures for LP.
+ * Most of this need rewrite and re-
+ * factor
+ */
 #ifndef LEAPFROG_UTILS 
 #define LEAPFROG_UTILS  1
 
@@ -8,6 +14,7 @@ void leapfrog_t_set_d(leapfrog_t *, const double d);
 void leapfrog_t_set_i(leapfrog_t *, const unsigned i);
 void leapfrog_t_set_lp(leapfrog_t *, const leapfrog_t *);
 
+void lp_init_state_precision(void);
 
 /*
  * Initial double-dot array by zeros
@@ -52,6 +59,7 @@ void lp_update_eq_generic(const ddot_array_t *, equation_t *, const int);
  */
 void lp_equation_copy(equation_t *dst, const equation_t *src);
 
+/* Conversion */
 double leapfrog_t_2_double(leapfrog_t *);
 
 #endif // LEAPFROG_UTILS

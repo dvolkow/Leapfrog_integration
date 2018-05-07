@@ -17,10 +17,10 @@
 #endif
 
 
-#define __leapfrog_hot__        __attribute__((__hot__))
-#define __leapfrog_cold__       __attribute__((__hot__))
+#define __leapfrog_hot__        __attribute__((hot))
+#define __leapfrog_cold__       __attribute__((cold))
 #define __leapfrog_unused__     __attribute__((unused))
-#define __leapfrog_pure__       __attribute_pure__
-#define __leapfrog_const__      __attribute_const__
+#define __leapfrog_pure__       __attribute__((pure))
+#define __leapfrog_const__      __attribute__((const))
 
 #endif  // LEAPFROG_COMPILE_H  

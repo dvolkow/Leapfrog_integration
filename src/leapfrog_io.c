@@ -11,14 +11,14 @@
 #include "leapfrog_cfg.h"
 
 
-__leapfrog_cold__
+__leapfrog_cold__ 
 FILE *lp_fopen(const char *fname) 
 {
         return fopen(fname, "r+");
 }
 
 
-__leapfrog_cold__
+__leapfrog_cold__ 
 void  lp_fclose(FILE *fname) 
 {
         fclose(fname);
@@ -27,42 +27,48 @@ void  lp_fclose(FILE *fname)
 
 
 __leapfrog_cold__
-void lp_init_eq_from_file(equation_t *eq, FILE *f)
+int lp_init_eq_from_file(equation_t *eq, FILE *f)
 {
         uint16_t i;
         uint8_t  j;
         unsigned int  LP_BODY_COUNT, LP_BODY_DIM;
         double readbuff;
+        int err = LP_SUCCESS;
+
+        assert(f);
 
         /* read dimention and count */
-        fscanf(f, "%u", &LP_BODY_DIM);
-        fscanf(f, "%u", &LP_BODY_COUNT);
+        err = fscanf(f, "%u", &LP_BODY_DIM);
+        err = fscanf(f, "%u", &LP_BODY_COUNT);
 
         GET_DIM(eq)  = LP_BODY_DIM;
         GET_SIZE(eq) = LP_BODY_COUNT;
         
         assert(GET_DIM(eq) <= LEAPFROG_MAX_DIM);
         assert(GET_SIZE(eq) <= LEAPFROG_MAX_COUNT);
+
         FORALL_BODY(i, GET_SIZE(eq)) {
                 FORALL_DIM(j, GET_DIM(eq)) {
-                        fscanf(f, "%lf", &readbuff);
+                        err = fscanf(f, "%lf", &readbuff);
                         leapfrog_t_set_d(&GET_X(eq, i, j), readbuff);
                 }
                 
 
                 FORALL_DIM(j, GET_DIM(eq)) {
-                        fscanf(f, "%lf", &readbuff);
+                        err = fscanf(f, "%lf", &readbuff);
                         leapfrog_t_set_d(&GET_X_DOT(eq, i, j), readbuff);
                 }
 
-                fscanf(f, "%lf", &readbuff);
+                err = fscanf(f, "%lf", &readbuff);
                 leapfrog_t_set_d(&GET_M(eq, i), readbuff);
                 GET_ID(eq, i) = i;
         }
-                
+        return err;
 }
 
-__leapfrog_cold__
+
+
+__leapfrog_cold__ __leapfrog_const__
 void lp_write_eq_to_screen(equation_t *eq) 
 {
         uint16_t i;
@@ -83,7 +89,9 @@ void lp_write_eq_to_screen(equation_t *eq)
         
 }
 
-__leapfrog_cold__
+
+
+__leapfrog_cold__ __leapfrog_const__
 void lp_write_eq_hamilton_to_screen(equation_t *eq) 
 {
         leapfrog_t h;
@@ -98,7 +106,8 @@ void lp_write_eq_hamilton_to_screen(equation_t *eq)
 }
 
 
-__leapfrog_hot__
+
+__leapfrog_hot__ __leapfrog_pure__
 void lp_write_eq_x_to_file(equation_t *eq, FILE *f) 
 {
         uint16_t i;
@@ -113,11 +122,17 @@ void lp_write_eq_x_to_file(equation_t *eq, FILE *f)
         }
 }
 
-__leapfrog_hot__
+
+
+
+__leapfrog_cold__ __leapfrog_pure__
 void lp_write_eq_to_file(equation_t *eq, FILE *f) 
 {
         uint16_t i;
         uint8_t  j;
+
+        assert(f);
+        assert(eq);
 
         fprintf(f, "%u %u\n", GET_DIM(eq), GET_SIZE(eq));
 
@@ -134,7 +149,9 @@ void lp_write_eq_to_file(equation_t *eq, FILE *f)
         }
 }
 
-__leapfrog_cold__
+
+
+__leapfrog_cold__ __leapfrog_pure__
 void lp_rbody_dump(equation_t *eq) 
 {
 #ifdef LEAPFROG_DEBUG
@@ -146,4 +163,5 @@ void lp_rbody_dump(equation_t *eq)
 #endif
         lp_write_eq_to_file(eq, f);
         lp_fclose(f);
+        printf("dumped to %s!\n", g_cfg.DEFAULT_FILE_RAND);
 }

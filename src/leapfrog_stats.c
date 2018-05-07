@@ -1,3 +1,12 @@
+/*
+ * Here calculate basic statistic
+ * of global structures. Most of
+ * them is Hamiltonial, that use
+ * for balance integrate step.
+ * Also may be include another 
+ * features for monitoring of sta-
+ * tements.
+ */
 #include "leapfrog_types.h"
 #include "leapfrog_compile.h"
 #include "leapfrog_utils.h"
@@ -20,6 +29,7 @@ static void lp_potential(leapfrog_t *res,
 
         LP_T_RELEASE(dist);
 }
+
 
 __leapfrog_hot__
 static void lp_full_potential(leapfrog_t *res,
@@ -67,6 +77,10 @@ static void lp_full_kinetic_energy(leapfrog_t *res,
         LP_T_RELEASE(E);
 }
 
+
+/*
+ * Basic control by this
+ */
 __leapfrog_hot__
 void lp_hamiltonian(leapfrog_t *res, equation_t *eq)
 {

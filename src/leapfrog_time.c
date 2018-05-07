@@ -1,6 +1,12 @@
+/*
+ * Times for feedback to
+ * user in case of long
+ * length calculations.
+ */
 #include <time.h>
 #include <stdio.h>
 #include "leapfrog_types.h"
+#include "leapfrog_compile.h"
 #include "leapfrog_utils.h"
 
 #define  __LP_MIN       60
@@ -9,11 +15,16 @@
 extern lp_param_t g_state;
 static time_t start_time;
 
+
+__leapfrog_cold__
 void lp_time_start_init(void)
 {
         start_time = time(NULL);
 }
 
+
+
+__leapfrog_cold__ __leapfrog_pure__
 void print_elapsed_time(void)
 {
         time_t current_time = time(NULL);
@@ -29,7 +40,9 @@ void print_elapsed_time(void)
 
 }
 
-void print_estimation_time(leapfrog_t *t)
+
+__leapfrog_cold__ __leapfrog_pure__
+void print_estimated_time(leapfrog_t *t)
 {
         time_t current_time = time(NULL);
         unsigned int h, m;
@@ -43,6 +56,6 @@ void print_estimation_time(leapfrog_t *t)
         m = (unsigned int)(seconds / __LP_MIN);
         seconds -= __LP_MIN * m;
 
-        printf("Estimation time: %u h : %u m : %0.1f s", h, m, seconds);
+        printf("Estimated time: %u h : %u m : %0.1f s. ", h, m, seconds);
 }
 

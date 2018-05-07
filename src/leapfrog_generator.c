@@ -57,6 +57,7 @@ void lp_equation_init_x_random(equation_t *eq)
         }
 }
 
+
 __leapfrog_cold__
 void lp_equation_init_random(equation_t *eq)
 {
@@ -64,6 +65,7 @@ void lp_equation_init_random(equation_t *eq)
         lp_equation_init_xdot_random(eq);
         lp_equation_init_m_random(eq);
 }
+
 
 __leapfrog_cold__
 void lp_equation_init_shape(equation_t *eq, 
@@ -73,6 +75,7 @@ void lp_equation_init_shape(equation_t *eq,
         GET_DIM(eq) = dim;
         GET_SIZE(eq) = size;
 }
+
 
 __leapfrog_cold__
 void lp_equation_init(equation_t *eq) 
@@ -105,6 +108,7 @@ void lp_equation_release(equation_t *eq)
         }
 }
 
+
 __leapfrog_cold__ 
 void lp_param_t_init(lp_param_t *state) 
 {
@@ -125,6 +129,8 @@ void lp_param_t_init(lp_param_t *state)
         state->isdemo = 0;
         state->precision_type = LP_DEFAULT_ROUNDING;
 }
+
+
 
 __leapfrog_cold__
 void lp_param_t_release(lp_param_t *state)

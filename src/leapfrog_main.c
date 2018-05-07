@@ -15,17 +15,46 @@
 
 extern lp_param_t g_state;
 
+/* Accumutalors variable */
 leapfrog_t t, thr, delta;
 
-static void leapfrog_run() {
+
+
+
+/*
+ * ------------ATTENTION!!------------
+ * FIRST CALLED FUNCTION BEFORE MAIN ENRTY!!! 
+ */
+__leapfrog_cold__
+static inline void LEAPFROG_PRECISION_INITIALIZE(void)
+{
+        g_state.precision_bits = LP_PRECISION_BITS_DEFAULT;
+}
+
+
+
+
+/*
+ * Run basic operations cycle here.
+ * Are global states and variables 
+ * MUST BE INITIALIZED when run it!
+ */
+__leapfrog_cold__
+static void leapfrog_run() 
+{
         unsigned i;
 
         FILE *in = lp_fopen(g_state.input_file);
+#ifdef LEAPFROG_DEBUG
+        printf("Open %s!\n", g_state.input_file);
+#endif
         lp_equation_init(&g_state.eq);
         lp_init_eq_from_file(&g_state.eq, in);
 
         lp_write_eq_hamilton_to_screen(&g_state.eq);
         lp_equation_set_ddot_start(&g_state.eq);
+
+        lp_fclose(in);
 
         FILE *out_x = fopen(
                         g_state.output_x_file ? g_state.output_x_file 
@@ -35,6 +64,10 @@ static void leapfrog_run() {
         lp_write_eq_x_to_file(&g_state.eq, out_x);
         fprintf(out_x, "\n\n");
 
+#ifdef LEAPFROG_DEBUG
+        printf("DEFAULT_FILE_RAND %s!\n", g_cfg.DEFAULT_FILE_RAND);
+        printf("g_cfg.output_x_file %s!\n", g_state.output_x_file);
+#endif
         i = 0;
         UNTIL_ITS_TIME(&t, &g_state.time) {
                 lp_core_up();
@@ -43,7 +76,7 @@ static void leapfrog_run() {
                         fprintf(out_x, "\n\n");
                         printf("\r%0.2f%% ready. ", 
                                   100 * leapfrog_t_2_double(&t) / leapfrog_t_2_double(&g_state.time));
-                        print_estimation_time(&t);
+                        print_estimated_time(&t);
                         print_elapsed_time();
                         leapfrog_sum(&thr, &thr, &delta);
                 }
@@ -56,10 +89,15 @@ static void leapfrog_run() {
         lp_write_eq_hamilton_to_screen(&g_state.eq);
 
         lp_fclose(out_x);
-        lp_fclose(in);
-
 }
 
+
+
+/*
+ * DEMO: generate rangom array by defined shape
+ *       write it into file and go to leapfrog_run
+ */
+__leapfrog_cold__
 static void demo_run() 
 {
         printf("DEMO run..\n");
@@ -72,30 +110,29 @@ static void demo_run()
         lp_equation_init_shape(&g_state.eq, g_state.dim, g_state.count);
         lp_equation_init_random(&g_state.eq);
 
-        
-        FILE *out = fopen(
-                        g_state.output_x_file ? g_state.output_x_file 
-                                              : g_cfg.DEFAULT_FILE_RAND, 
-                                                                 "w+");
-
-
-        lp_write_eq_to_file(&g_state.eq, out);
-        lp_fclose(out);
 
 #ifdef LEAPFROG_DEBUG
         printf("%s: lp_rbody_dump ...\n", __FUNCTION__);
 #endif
-        lp_rbody_dump(&g_state.eq);
+        
+        FILE *out = fopen(g_cfg.DEFAULT_FILE_RAND, "w+");
+        lp_write_eq_to_file(&g_state.eq, out);
+        lp_fclose(out);
 
 #ifdef LEAPFROG_DEBUG
         printf("%s: lp_rbody_dump LP_SUCCESS\n", __FUNCTION__);
 #endif
-        g_state.input_file = g_state.output_x_file ? g_state.output_x_file 
-                                                   : g_cfg.DEFAULT_FILE_RAND;
+        g_state.input_file = g_cfg.DEFAULT_FILE_RAND;
         leapfrog_run();
 }
 
 
+
+/*
+ * ------------ATTENTION!!-------------
+ *  This must be as possible near begin
+ */
+__leapfrog_cold__
 static void leapfrog_main_global_init() 
 {
         LP_T_INIT(t);
@@ -114,6 +151,8 @@ static void leapfrog_main_global_init()
         lp_time_start_init();
 }
 
+
+__leapfrog_cold__
 static void leapfrog_main_global_release() 
 {
         LP_T_RELEASE(delta);
@@ -122,9 +161,13 @@ static void leapfrog_main_global_release()
 }
 
 
+
 int main(int argc, char **argv) 
 {
+        
         int err = LP_SUCCESS;
+        /* !!!! */
+        LEAPFROG_PRECISION_INITIALIZE();
 
         leapfrog_read_cfg();
         lp_core_structures_init();
