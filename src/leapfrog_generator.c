@@ -141,3 +141,35 @@ void lp_param_t_release(lp_param_t *state)
         LP_T_RELEASE(state->step);
         LP_T_RELEASE(state->precision);
 }
+
+
+/* ------------------------------
+ * Another 4fun generate features:
+ * ------------------------------
+ */
+__leapfrog_cold__ 
+void lp_generate_symmetry(equation_t *eq)
+{
+        uint16_t i;
+        uint8_t  j;
+        assert(GET_SIZE(eq) % 2 == 0);
+
+        srand(time(NULL));
+
+        FORALL_PAIR_BODY(i, GET_SIZE(eq)) {
+                leapfrog_t_set_d(&GET_M(eq, i), g_cfg.GEN_M_SCALE * fabs(((double)rand() / RAND_MAX * 2.0 - 1.0)));
+                leapfrog_t_set_lp(&GET_M(eq, i + 1), &GET_M(eq, i));
+                FORALL_DIM(j, GET_DIM(eq)) {
+                        leapfrog_t_set_d(&GET_X_DOT(eq, i, j), g_cfg.GEN_XDOT_SCALE * ((double)rand() / RAND_MAX * 2.0 - 1.0));
+                        leapfrog_t_set_d(&GET_X(eq, i, j), g_cfg.GEN_X_SCALE * ((double)rand() / RAND_MAX * 2.0 - 1.0));
+
+                        leapfrog_t_set_lp(&GET_X(eq, i + 1, j), &GET_X(eq, i, j));
+                        leapfrog_neg(&GET_X(eq, i + 1, j), &GET_X(eq, i + 1, j));
+
+                        leapfrog_t_set_lp(&GET_X_DOT(eq, i + 1, j), &GET_X_DOT(eq, i, j));
+                        leapfrog_neg(&GET_X_DOT(eq, i + 1, j), &GET_X_DOT(eq, i + 1, j));
+                }
+        }
+}
+
+

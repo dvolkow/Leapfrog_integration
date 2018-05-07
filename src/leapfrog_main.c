@@ -108,7 +108,15 @@ static void demo_run()
                                  leapfrog_t_2_double(&g_state.precision));
 
         lp_equation_init_shape(&g_state.eq, g_state.dim, g_state.count);
-        lp_equation_init_random(&g_state.eq);
+
+        switch(g_state.isdemo) {
+                case(LP_US_DEMO):
+                        lp_equation_init_random(&g_state.eq);
+                        break;
+                case(LP_SYMDEMO):
+                        lp_generate_symmetry(&g_state.eq);
+                        break;
+        }
 
 
 #ifdef LEAPFROG_DEBUG

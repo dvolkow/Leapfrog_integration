@@ -63,6 +63,7 @@ static inline void show_keys()
         printf("         \e[1m-f\e[0m \e[4mFILE\e[0m      set input data file\n\n");
         printf("         \e[1m-p\e[0m \e[4mDEC\e[0m       set float precision\n\n");
         printf("         \e[1m-t\e[0m \e[4mTIME\e[0m      set time for integrate\n\n");
+        printf("         \e[1m-s\e[0m \e[4mFILE\e[0m      set simple symmetry demo mode\n\n");
         printf("         \e[1m-o\e[0m \e[4mFILE\e[0m      set output data file\n\n");
         printf("         \e[1m-h, --help\e[0m\n");
         printf("                      display this help and exit\n\n");
@@ -172,7 +173,7 @@ int leapfrog_parse_arg(int args, char **argv)
                                 goto usage_ret;
                         }
                 } else if (matches("demo")) {
-                        g_state.isdemo = 1;
+                        g_state.isdemo = LP_US_DEMO;
                         if (CHECK_ARGS(args)) {
                                 NEXT_ARG(args, argv);
                                 g_state.dim = atoi(*argv);
@@ -208,6 +209,8 @@ int leapfrog_parse_arg(int args, char **argv)
                 } else if (matches("-v") || matches("--version")) {
                         show_version();
                         goto ret_fail;
+                } else if (matches("-s")) {
+                        g_state.isdemo = LP_SYMDEMO;
                 } else if (matches("-h") || matches("--help")) {
                         show_help();
                         goto ret_fail;

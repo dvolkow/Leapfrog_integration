@@ -27,4 +27,5 @@ void lp_equation_release(equation_t *eq);
 void lp_param_t_init(lp_param_t *state);
 void lp_param_t_release(lp_param_t *state);
 
+void lp_generate_symmetry(equation_t *eq);
 #endif // LEAPFROG_GENERATOR_H

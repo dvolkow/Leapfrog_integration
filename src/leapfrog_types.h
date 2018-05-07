@@ -138,6 +138,15 @@ enum {
 };
 
 
+/*
+ * Demo mode
+ */
+enum {
+        LP_NOTDEMO = 0,
+        LP_US_DEMO,
+        LP_SYMDEMO,
+};
+
 
 /*
  * Error codes for debug & communication

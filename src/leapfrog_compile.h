@@ -8,6 +8,8 @@
 #define FORALL_BODY(i, lim) for (i = 0; i < (lim); ++i)
 #define FORALL_DIM(j, lim)  for (j = 0; j < (lim); ++j)
 
+#define FORALL_PAIR_BODY(i, lim) for (i = 0; i < (lim); i += 2)
+
 #define UNTIL_ITS_TIME(current_time, estimated_time) while (leapfrog_cmp(current_time, estimated_time) < 0)
 
 #ifdef LEAPFROG_CONST_STEP

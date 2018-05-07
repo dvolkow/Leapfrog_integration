@@ -2,6 +2,7 @@ saves/*
 *.swp
 *.dat
 *.txt
+*.cfg
 cscope.out
 *.gif
 leapfrog
