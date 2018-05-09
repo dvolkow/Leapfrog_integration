@@ -23,8 +23,8 @@ oclean:
 	rm $(OBJECTS) 
 
 
-install:
-	sudo cp ./leapfrog /usr/bin/leapfrog
+install: oclean
+	sudo mv ./leapfrog /usr/bin/leapfrog
 	sudo mkdir -p /etc/leapfrog
 	sudo cp ./lp.cfg /etc/leapfrog/lp.cfg
 
