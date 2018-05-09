@@ -128,7 +128,7 @@ static inline void lp_optimize_step_by_hamiltonian(leapfrog_t *res,
 
         while (lp_optimize_step_condition(&h_current,
                                           &h_new, precision) < 0) {
-                leapfrog_mul_2(res, res);
+                leapfrog_mul_d(res, res, LEAPFROG_STEP_MULTR);
 #ifdef LEAPFROG_DEBUG
                 printf("%s: res %0.15f\n", 
                                 __FUNCTION__, leapfrog_t_2_double(res));
@@ -139,7 +139,7 @@ static inline void lp_optimize_step_by_hamiltonian(leapfrog_t *res,
         /* 
          * Here was last cur_step * 2 
          */
-        leapfrog_div_2(res, res);
+        leapfrog_div_d(res, res, LEAPFROG_STEP_MULTR);
 
 ret_release:
         LP_T_RELEASE(h_current);

@@ -171,7 +171,7 @@ void lp_generate_symmetry(equation_t *eq)
         FORALL_PAIR_BODY(i, GET_SIZE(eq)) {
                 leapfrog_t_set_d(&GET_M(eq, i), 
                                  g_cfg.GEN_M_SCALE * 
-                                                LP_GET_RANDOM());
+                                                fabs(LP_GET_RANDOM()));
 
                 leapfrog_t_set_lp(&GET_M(eq, i + 1), &GET_M(eq, i));
 

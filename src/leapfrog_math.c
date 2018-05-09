@@ -60,6 +60,13 @@ inline void leapfrog_d_div(leapfrog_t *res, double a,
 }
 
 __leapfrog_hot__
+inline void leapfrog_div_d(leapfrog_t *res, 
+                                leapfrog_t *a, double b)
+{
+        mpfr_div_d(*res, *a, b, LP_RND);
+}
+
+__leapfrog_hot__
 inline void leapfrog_div_2(leapfrog_t *res, leapfrog_t *a) 
 {
         mpfr_div_2ui(*res, *a, 1, LP_RND);
