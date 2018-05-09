@@ -10,6 +10,10 @@
 #include "leapfrog_math.h"
 #include "leapfrog_cfg.h"
 
+// Local state (need init!)
+static leapfrog_t       lp_t_io_buff;
+static FILE            *f_io_hamilonian;
+
 
 __leapfrog_cold__ 
 FILE *lp_fopen(const char *fname) 
@@ -150,6 +154,14 @@ void lp_write_eq_to_file(equation_t *eq, FILE *f)
 }
 
 
+// ? __leapfrog_cold__
+void lp_eq_hamiltonian_dump(equation_t *eq) 
+{
+        lp_hamiltonian(&lp_t_io_buff, eq);
+        fprintf(f_io_hamilonian, "%0.20f\n", 
+                        leapfrog_t_2_double(&lp_t_io_buff));
+}
+
 
 __leapfrog_cold__ __leapfrog_pure__
 void lp_rbody_dump(equation_t *eq) 
@@ -164,4 +176,37 @@ void lp_rbody_dump(equation_t *eq)
         lp_write_eq_to_file(eq, f);
         lp_fclose(f);
         printf("dumped to %s!\n", g_cfg.DEFAULT_FILE_RAND);
+}
+
+
+/*
+ * -----------ATTENTION!!!-------------
+ * MUST CALLED BEFORE EVERYONE HERE!!!!
+ * -----------ATTENTION!!!-------------
+ */
+__leapfrog_cold__
+void lp_io_init()
+{
+        LP_T_INIT(lp_t_io_buff);
+        leapfrog_t_set_d(&lp_t_io_buff, 0);
+#ifdef LEAPFROG_DEBUG
+        //assert(g_state.output_h_file);
+#endif
+        if (g_state.output_h_file)
+                f_io_hamilonian = fopen(g_state.output_h_file, "w+");
+#ifdef LEAPFROG_DEBUG
+        //assert(f_io_hamilonian);
+#endif
+}
+
+__leapfrog_cold__
+void lp_io_release()
+{
+#ifdef LEAPFROG_DEBUG
+        //assert(f_io_hamilonian);
+#endif
+        if (f_io_hamilonian)
+                lp_fclose(f_io_hamilonian);
+
+        LP_T_RELEASE(lp_t_io_buff);
 }

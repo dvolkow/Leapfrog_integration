@@ -74,6 +74,9 @@ static void leapfrog_run()
                 LEAPFROG_ASSERT_SAMPLING(&t, &thr) {
                         lp_write_eq_x_to_file(&g_state.eq, out_x);
                         fprintf(out_x, "\n\n");
+                        if (g_state.output_h_file)
+                                lp_eq_hamiltonian_dump(&g_state.eq);
+
                         printf("\r%0.2f%% ready. ", 
                                   100 * leapfrog_t_2_double(&t) / leapfrog_t_2_double(&g_state.time));
                         print_estimated_time(&t);
@@ -180,7 +183,11 @@ int main(int argc, char **argv)
         leapfrog_read_cfg();
         lp_core_structures_init();
 #ifdef LEAPFROG_DEBUG
-        printf("Core structures initial success\n");
+        printf("Core structures initialized success\n");
+#endif
+        lp_io_init();
+#ifdef LEAPFROG_DEBUG
+        printf("IO structures initialized success\n");
 #endif
 
 
@@ -195,6 +202,9 @@ int main(int argc, char **argv)
         else 
                 leapfrog_run();
 
+        lp_io_release();
+        lp_core_structures_release();
         leapfrog_main_global_release();
+
         return LP_SUCCESS;
 }

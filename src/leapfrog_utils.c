@@ -28,6 +28,61 @@ void lp_ddot_array_zero_init(ddot_array_t *dst)
 }
 
 
+static inline void lp_point_init_by_point(point_t *dst, point_t *src) 
+{
+        point_id_t i;
+        FORALL_DIM(i, LEAPFROG_MAX_DIM) {
+                leapfrog_t_set_lp(&dst->x[i], &src->x[i]);
+                leapfrog_t_set_lp(&dst->x_dot[i], &src->x_dot[i]);
+                leapfrog_t_set_lp(&dst->x_ddot_prev[i], 
+                                  &src->x_ddot_prev[i]);
+        }
+        leapfrog_t_set_lp(&dst->m, &src->m);
+        /* 
+         * ID is not attribute! 
+         * Mean nothing without equaiton 
+         */
+}
+
+
+/* Generating bodies made me write is */
+void lp_push_body_to_eq(point_t *body, equation_t *eq)
+{
+        assert(GET_SIZE(eq) < LEAPFROG_MAX_COUNT);
+        /* Equation is same stack */
+        ++GET_SIZE(eq);
+        lp_point_init_by_point(&GET_BODY(eq, GET_SIZE(eq) - 1),
+                                                          body);
+}
+
+
+/*
+ * @shift_array: contains shift vector
+ * @dim        : is length of shift_array 
+ */
+void lp_body_shift_x(point_t *body, leapfrog_t *shift_array, 
+                                                const uint8_t dim)
+{
+        uint8_t i;
+        FORALL_DIM(i, dim) {
+                leapfrog_sum(&body->x[i], &body->x[i], 
+                /* need &shift[i] */      shift_array + i);
+        }
+}
+
+
+/* Typical stack interface */
+void lp_pop_body_from_eq(equation_t *eq) 
+{
+        assert(GET_SIZE(eq) > 1);
+        --GET_SIZE(eq);
+        /* Because access to eq elements
+         * call GET_SIZE(eq) in cycles,
+         * after this last body will not
+         * reached
+         */
+}
+
 
 /*
  * Calculate distantion between two points

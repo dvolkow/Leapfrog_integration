@@ -14,7 +14,7 @@
 
 #ifndef LP_MPFR_CASE
         /*
-         * Default your will have double precision
+         * Default you will have double precision
          * float point type for math operations.
          * Next step is using multiprecision lib-
          * raries for it but they are different as
