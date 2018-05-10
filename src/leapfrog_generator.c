@@ -23,7 +23,9 @@ void lp_equation_init_m_random(equation_t *eq)
         srand(time(NULL));
 
         FORALL_BODY(i, GET_SIZE(eq)) {
-                leapfrog_t_set_d(&GET_M(eq, i), g_cfg.GEN_M_SCALE * fabs(((double)rand() / RAND_MAX * 2.0 - 1.0)));
+                leapfrog_t_set_d(&GET_M(eq, i), 
+                                 g_cfg.GEN_M_SCALE * 
+                                        fabs(LP_GET_RANDOM()));
         }
 }
 
@@ -37,7 +39,9 @@ void lp_equation_init_xdot_random(equation_t *eq)
 
         FORALL_BODY(i, GET_SIZE(eq)) {
                 FORALL_DIM(j, GET_DIM(eq)) {
-                        leapfrog_t_set_d(&GET_X_DOT(eq, i, j), g_cfg.GEN_XDOT_SCALE * ((double)rand() / RAND_MAX * 2.0 - 1.0));
+                        leapfrog_t_set_d(&GET_X_DOT(eq, i, j), 
+                                         g_cfg.GEN_XDOT_SCALE * 
+                                                LP_GET_RANDOM());
                 }
         }
 }
@@ -52,7 +56,9 @@ void lp_equation_init_x_random(equation_t *eq)
 
         FORALL_BODY(i, GET_SIZE(eq)) {
                 FORALL_DIM(j, GET_DIM(eq)) {
-                        leapfrog_t_set_d(&GET_X(eq, i, j), g_cfg.GEN_X_SCALE * ((double)rand() / RAND_MAX * 2.0 - 1.0));
+                        leapfrog_t_set_d(&GET_X(eq, i, j), 
+                                        g_cfg.GEN_X_SCALE * 
+                                                LP_GET_RANDOM());
                 }
         }
 }
@@ -147,6 +153,12 @@ void lp_param_t_release(lp_param_t *state)
  * Another 4fun generate features:
  * ------------------------------
  */
+
+/*
+ * Mirroring coordinates, create
+ * bodies as pair symmetric rela-
+ * tive of center of coordinates.
+ */
 __leapfrog_cold__ 
 void lp_generate_symmetry(equation_t *eq)
 {
@@ -157,19 +169,28 @@ void lp_generate_symmetry(equation_t *eq)
         srand(time(NULL));
 
         FORALL_PAIR_BODY(i, GET_SIZE(eq)) {
-                leapfrog_t_set_d(&GET_M(eq, i), g_cfg.GEN_M_SCALE * fabs(((double)rand() / RAND_MAX * 2.0 - 1.0)));
+                leapfrog_t_set_d(&GET_M(eq, i), 
+                                 g_cfg.GEN_M_SCALE * 
+                                                fabs(LP_GET_RANDOM()));
+
                 leapfrog_t_set_lp(&GET_M(eq, i + 1), &GET_M(eq, i));
+
                 FORALL_DIM(j, GET_DIM(eq)) {
-                        leapfrog_t_set_d(&GET_X_DOT(eq, i, j), g_cfg.GEN_XDOT_SCALE * ((double)rand() / RAND_MAX * 2.0 - 1.0));
-                        leapfrog_t_set_d(&GET_X(eq, i, j), g_cfg.GEN_X_SCALE * ((double)rand() / RAND_MAX * 2.0 - 1.0));
+                        leapfrog_t_set_d(&GET_X_DOT(eq, i, j), 
+                                         g_cfg.GEN_XDOT_SCALE * LP_GET_RANDOM());
+                        leapfrog_t_set_d(&GET_X(eq, i, j), 
+                                         g_cfg.GEN_X_SCALE * LP_GET_RANDOM());
 
                         leapfrog_t_set_lp(&GET_X(eq, i + 1, j), &GET_X(eq, i, j));
-                        leapfrog_neg(&GET_X(eq, i + 1, j), &GET_X(eq, i + 1, j));
 
-                        leapfrog_t_set_lp(&GET_X_DOT(eq, i + 1, j), &GET_X_DOT(eq, i, j));
-                        leapfrog_neg(&GET_X_DOT(eq, i + 1, j), &GET_X_DOT(eq, i + 1, j));
+                        leapfrog_neg(&GET_X(eq, i + 1, j), 
+                                                &GET_X(eq, i + 1, j));
+
+                        leapfrog_t_set_lp(&GET_X_DOT(eq, i + 1, j), 
+                                                &GET_X_DOT(eq, i, j));
+                        leapfrog_neg(&GET_X_DOT(eq, i + 1, j), 
+                                                &GET_X_DOT(eq, i + 1, j));
                 }
         }
 }
-
 

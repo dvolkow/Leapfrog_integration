@@ -14,7 +14,7 @@
 
 #ifndef LP_MPFR_CASE
         /*
-         * Default your will have double precision
+         * Default you will have double precision
          * float point type for math operations.
          * Next step is using multiprecision lib-
          * raries for it but they are different as
@@ -37,6 +37,7 @@
 
         #define leapfrog_div(res, a, b)       (*(res) = (*(a)) / (*(b)))
         #define leapfrog_d_div(res, a, b)     (*(res) = (a) / (*(b)))
+        #define leapfrog_div_d(res, a, b)     (*(res) = (*(a)) / (b))
         #define leapfrog_div_2(res, a)        (*(res) = (*(a)) / 2)
 
         #define leapfrog_neg(res, a)          (*(res) = -(*(a)))
@@ -70,6 +71,8 @@
                                                 leapfrog_t *b);
         void leapfrog_d_div(leapfrog_t *res, double a,
                                                 leapfrog_t *b); 
+        void leapfrog_div_d(leapfrog_t *res, leapfrog_t * a,
+                                                double b); 
         void leapfrog_div_2(leapfrog_t *res, leapfrog_t *a); 
         void leapfrog_sqrt(leapfrog_t *res, leapfrog_t *a); 
         void leapfrog_abs(leapfrog_t *res, leapfrog_t *a);

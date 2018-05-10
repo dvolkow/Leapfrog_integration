@@ -3,6 +3,7 @@
 
 #include "leapfrog_types.h"
 
+#define LP_GET_RANDOM()   ((double)rand() / RAND_MAX * 2.0 - 1.0)
 
 #define LP_GEN_M_SCALE          3.5
 #define LP_GEN_X_SCALE          50

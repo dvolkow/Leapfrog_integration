@@ -60,6 +60,7 @@ static inline void show_keys()
         printf("\e[1mKEYS\e[0m\n\n");
         printf("         \e[1m-b\e[0m \e[4mBITS\e[0m      set bits precision\n\n");
         printf("         \e[1m-d\e[0m \e[4mDEC\e[0m       set decimal precision\n\n");
+        printf("         \e[1m-e\e[0m \e[4mFILE\e[0m      set output hamiltonian to file\n\n");
         printf("         \e[1m-f\e[0m \e[4mFILE\e[0m      set input data file\n\n");
         printf("         \e[1m-p\e[0m \e[4mDEC\e[0m       set float precision\n\n");
         printf("         \e[1m-t\e[0m \e[4mTIME\e[0m      set time for integrate\n\n");
@@ -125,6 +126,13 @@ int leapfrog_parse_arg(int args, char **argv)
                         if (CHECK_ARGS(args)) {
                                 NEXT_ARG(args, argv);
                                 g_state.output_x_file = *argv;
+                        } else {
+                                goto usage_ret;
+                        }
+                } else if (matches("-e")) {
+                        if (CHECK_ARGS(args)) {
+                                NEXT_ARG(args, argv);
+                                g_state.output_h_file = *argv;
                         } else {
                                 goto usage_ret;
                         }

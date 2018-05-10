@@ -4,6 +4,12 @@
 #include <stdio.h>
 #include "leapfrog_types.h"
 
+/*
+ * INITIALIZE BEFORE USED!
+ */
+void lp_io_init();
+void lp_io_release();
+
 FILE *lp_fopen(const char *);
 void  lp_fclose(FILE *);
 
@@ -37,5 +43,7 @@ void lp_rbody_dump(equation_t *eq);
 
 void lp_write_eq_to_screen(equation_t *eq); 
 void lp_write_eq_hamilton_to_screen(equation_t *eq); 
+
+void lp_eq_hamiltonian_dump(equation_t *eq);
 
 #endif // LEAPFROG_IO_H

@@ -9,17 +9,26 @@
 
 #include "leapfrog_types.h"
 
-/* Initialization */
+/* Initializations: */
 void leapfrog_t_set_d(leapfrog_t *, const double d);
 void leapfrog_t_set_i(leapfrog_t *, const unsigned i);
 void leapfrog_t_set_lp(leapfrog_t *, const leapfrog_t *);
 
 void lp_init_state_precision(void);
-
-/*
- * Initial double-dot array by zeros
- */
 void lp_ddot_array_zero_init(ddot_array_t *);
+
+
+/* Body target operation:
+ * -- push/pop from equation
+ * -- shift
+ */
+void lp_push_body_to_eq(point_t *body, equation_t *eq);
+void lp_pop_body_from_eq(equation_t *eq); 
+
+/* Move body by space coordinates */
+void lp_body_shift_x(point_t *body, leapfrog_t *shift_array, 
+                                        const uint8_t dim);
+
 
 /*
  * Calculate distantion between points
