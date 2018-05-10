@@ -54,6 +54,7 @@ static int leapfrog_check_g_state()
                                                       : LP_BAD_STATE;
 }
 
+/*
 __leapfrog_cold__
 static inline void show_keys() 
 {
@@ -71,6 +72,7 @@ static inline void show_keys()
         printf("         \e[1m-v, --version\e[0m\n");
         printf("                      output version information and exit\n\n");
 }
+*/
 
 __leapfrog_cold__ 
 static void show_help()
@@ -80,7 +82,7 @@ static void show_help()
         printf("         \e[1mleapfrog\e[0m -f IN_FILE -t TIME [\e[4mOPTION\e[0m] \e[4mMODE_PRECISION\e[0m\n");
         printf("         or\n");
         printf("         \e[1mleapfrog\e[0m demo DIM COUNT -t TIME [\e[4mOPTION\e[0m] \e[4mMODE_PRECISION\e[0m\n\n");
-        show_keys();
+ //     show_keys();
         printf("\e[1mEXAMPLES\e[0m\n\n   leapfrog demo 2 3 -t 2 -p 0.000001\n\n");
         printf("This run leapfrog for 3 random bodies into 2 dimention space according\n");
         printf("configure file or default configure. Current default configure you can\n");
@@ -92,7 +94,7 @@ static void show_help()
         printf("decimal precision as part of Hamiltonian of initial data. Also, \n");
         printf("will extend bitset for float-point operations to 200 bits (instead of\n");
         printf("default 64 bit).\n\n\n");
-        
+        printf("Also see man page for leapfrog\n");
 }
 
 /*

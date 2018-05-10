@@ -1,0 +1,49 @@
+.\" Manpage for Leapfrog Integrator
+.\" Contact volkov12@rambler.ru to correct errors or typos.
+.TH man 1 "10 May 2018" "0.2.2" "Leapfrog man page"
+.SH NAME
+leapfrog \- N-Body intergator with Leapfrog integration method
+.SH SYNOPSIS 
+.B leapfrog 
+-f \fI\,INPUT\/\fR -t \fI\,TIME\/\fR [\fI\,OPTION\/\fR]... \fI\,PRECISION\/\fR
+.PP 
+.B leapfrog demo \fI\,DIM\/\fR \fI\,COUNT\/\fR -t \fI\,TIME\/\fR [\fI\,OPTION\/\fR]... \fI\,PRECISION\/\fR
+.SH DESCRIPTION
+leapfrog is pure-C written program for Leapfrog integration to N-Body equations.
+.SH OPTIONS
+The leapfrog support next options
+.PP
+.TP
+\fB\-b\fR \fI\,BITS\/\fR
+set bits precision for arithmetic operations into multi-precision library (MPFR now)
+.TP
+\fB\-d\fR \fI\,DPOINTS\/\fR
+set decimal precision for control step by Hamiltonian
+.TP
+\fB\-e\fR \fI\,FILE\/\fR
+set file for output Hamiltonian sync with -o mode resolution
+.TP
+\fB\-o\fR \fI\,FILE\/\fR
+set file for output space coordinates (for plot)
+.TP
+\fB\-p\fR \fI\,VALUE\/\fR
+set precision for control step by Hamiltonian as float value
+.TP
+\fB\-s\fR 
+set symmetry type generator (for demo mode only)
+.TP
+\fB\-h\fR 
+display help and exit
+.SH BUGS
+No known bugs.
+.SH COPYRIGHT
+Copyright \(co 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+.br
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+.SH AUTHOR
+Written by Daniel Wolkow (volkov12@rambler.ru)
+.PP
+.br
+Full documentation at: <https://github.com/dvolkow/Leapfrog_integration>
