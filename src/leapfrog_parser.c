@@ -154,7 +154,8 @@ int leapfrog_parse_arg(int args, char **argv)
                                 sscanf(*argv, "%lf", &readbuff);
                                 leapfrog_t_set_d(&g_state.precision, readbuff);
                                 g_state.precision_type = LP_DEFAULT_ROUNDING;
-                                goto ret_ok;
+                                if (!CHECK_ARGS(args))
+                                        goto ret_ok;
                         } else {
                                 goto usage_ret;
                         }
@@ -164,7 +165,8 @@ int leapfrog_parse_arg(int args, char **argv)
                                 g_state.precision_rounding = atoi(*argv);
                                 g_state.precision_type = LP_DEC_ROUNDING;
                                 lp_init_state_precision();
-                                goto ret_ok;
+                                if (!CHECK_ARGS(args))
+                                        goto ret_ok;
                         } else {
                                 goto usage_ret;
                         }
