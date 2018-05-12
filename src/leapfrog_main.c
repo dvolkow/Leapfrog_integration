@@ -185,7 +185,6 @@ int main(int argc, char **argv)
 #ifdef LEAPFROG_DEBUG
         printf("Core structures initialized success\n");
 #endif
-        lp_io_init();
 #ifdef LEAPFROG_DEBUG
         printf("IO structures initialized success\n");
 #endif
@@ -196,6 +195,7 @@ int main(int argc, char **argv)
                 return err;
 
         leapfrog_main_global_init();
+        lp_io_init();
 
         if (g_state.isdemo) 
                 demo_run();
