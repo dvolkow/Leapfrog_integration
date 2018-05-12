@@ -15,4 +15,7 @@
 
 void lp_hamiltonian(leapfrog_t *res, equation_t *);
 
+
+void lp_stats_init(void);
+void lp_stats_release(void); 
 #endif // LEAPFROG_STATS_H
