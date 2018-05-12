@@ -186,7 +186,6 @@ int main(int argc, char **argv)
         printf("Core structures initialized success\n");
 #endif
 
-
         err = leapfrog_parse_arg(argc, argv);
         if (err)
                 return err;
