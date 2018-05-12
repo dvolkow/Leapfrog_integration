@@ -185,17 +185,17 @@ int main(int argc, char **argv)
 #ifdef LEAPFROG_DEBUG
         printf("Core structures initialized success\n");
 #endif
-#ifdef LEAPFROG_DEBUG
-        printf("IO structures initialized success\n");
-#endif
-
 
         err = leapfrog_parse_arg(argc, argv);
         if (err)
                 return err;
 
         leapfrog_main_global_init();
+        lp_stats_init();
         lp_io_init();
+#ifdef LEAPFROG_DEBUG
+        printf("IO structures initialized success\n");
+#endif
 
         if (g_state.isdemo) 
                 demo_run();
@@ -203,6 +203,7 @@ int main(int argc, char **argv)
                 leapfrog_run();
 
         lp_io_release();
+        lp_stats_release();
         lp_core_structures_release();
         leapfrog_main_global_release();
 
